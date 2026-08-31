@@ -482,11 +482,11 @@ create policy "allow anon all" on logiflow_db
     </div>
     <div class="form-row">
       <div class="field"><label>Data</label><input type="date" id="f-data"></div>
-      <div class="field"><label>Volumes / Refs.</label><input type="number" id="f-vols" placeholder="0" min="1"></div>
+      <div class="field"><label>Volumes / Refs.</label><input type="number" id="f-vols" placeholder="0" min="1" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('btn-registrar-pedido').focus();}"></div>
     </div>
     <div class="form-row">
       <div class="field"><label>Tipo do Pedido</label>
-        <select id="f-tipo"><option value="">-- Selecione --</option><option value="aberto">Aberto</option><option value="fechado">Fechado</option></select>
+        <select id="f-tipo"><option value="">-- Selecione --</option><option value="aberto">Aberto</option><option value="fechado" selected>Fechado</option></select>
       </div>
       <div class="field"><label>Status</label>
         <select id="f-status"><option value="normal">Normal</option><option value="prioridade">🔴 Prioridade</option></select>
@@ -507,7 +507,7 @@ create policy "allow anon all" on logiflow_db
     </div>
     <div class="popup-btns">
       <button class="btn-sec" onclick="closeOverlay('ov-new')">Cancelar</button>
-      <button class="btn-prim" onclick="addPedido()">✓ Registrar Pedido</button>
+      <button class="btn-prim" id="btn-registrar-pedido" onclick="addPedido()">✓ Registrar Pedido</button>
     </div>
   </div>
 </div>
@@ -516,6 +516,9 @@ create policy "allow anon all" on logiflow_db
 <div class="overlay" id="ov-edit">
   <div class="popup">
     <div class="popup-title">✎ Editar Pedido</div>
+    <div class="form-row full">
+      <div class="field"><label>OS</label><input type="text" id="e-os" placeholder="Número da OS"></div>
+    </div>
     <div class="form-row">
       <div class="field"><label>Carregamento</label><input type="text" id="e-cargo" placeholder="Ex: CRG-001"></div>
       <div class="field"><label>Colaborador</label><input type="text" id="e-colab" list="colabs-datalist" placeholder="Matrícula ou nome" autocomplete="off" onkeydown="colabAutofillEnter(event)" onblur="colabAutofillBlur(event)"></div>
@@ -1059,6 +1062,7 @@ async function cloudLoad(){
     EMPDB=mergeColecao(remoto.empilhadores, EMPDB, TOMB.empilhadores);
     PICKDB=mergeColecao(remoto.picking, PICKDB, TOMB.picking);
     COLAB_MATRICULAS=mergeColecao(remoto.colaboradores, COLAB_MATRICULAS, TOMB.colaboradores);
+    dedupeColabMatriculas();
     // CALCOV (medidas da calculadora) não participa mais da sincronização com a nuvem.
     saveLocal();
     refreshAll();
@@ -1112,6 +1116,7 @@ async function cloudPull(){
     if(mudou){
       DB=novoDB; EMPDB=novoEMPDB; PICKDB=novoPICKDB; COLAB_MATRICULAS=novoCOLABMAT;
       TOMB.pedidos=novoTombPed; TOMB.empilhadores=novoTombEmp; TOMB.picking=novoTombPick; TOMB.colaboradores=novoTombColab;
+      dedupeColabMatriculas();
       saveLocal();
       refreshAll();
       renderColabsDatalist();
@@ -1144,6 +1149,7 @@ async function cloudPush(){
   EMPDB=mergeColecao(remoto.empilhadores, EMPDB, TOMB.empilhadores);
   PICKDB=mergeColecao(remoto.picking, PICKDB, TOMB.picking);
   COLAB_MATRICULAS=mergeColecao(remoto.colaboradores, COLAB_MATRICULAS, TOMB.colaboradores);
+  dedupeColabMatriculas();
   // CALCOV (medidas da calculadora) não participa mais da sincronização com a nuvem.
   saveLocal();
 
@@ -1792,9 +1798,37 @@ function loadColabs(){
   // individualmente, e para o merge com a nuvem via mergeColecao) — também migra
   // registros antigos que ainda usavam a chave _id.
   COLAB_MATRICULAS.forEach(o=>{ if(o._id&&!o.id){ o.id=o._id; delete o._id; } if(!o.id) o.id='cm'+Date.now()+Math.random().toString(36).slice(2,7); });
+  dedupeColabMatriculas();
   saveLocal();
   renderColabsDatalist();
   renderColabMatriculasManageList();
+}
+// Remove colaboradores duplicados (mesmo nome, ignorando maiúsc./minúsc. e espaços
+// nas pontas). Mantém sempre o registro mais antigo (id mais antigo) e registra uma
+// tumba para os removidos, para que não "voltem" ao sincronizar com a nuvem/outro
+// aparelho. Retorna true se alguma duplicata foi removida.
+function dedupeColabMatriculas(){
+  const vistos={};
+  const manter=[];
+  const remover=[];
+  [...COLAB_MATRICULAS]
+    .sort((a,b)=>String(a.id).localeCompare(String(b.id)))
+    .forEach(item=>{
+      const chave=(item.nome||'').trim().toLowerCase();
+      if(!chave) return;
+      if(vistos[chave]){
+        remover.push(item);
+      }else{
+        vistos[chave]=item;
+        manter.push(item);
+      }
+    });
+  if(remover.length){
+    remover.forEach(item=>{ TOMB.colaboradores[String(item.id)]=Date.now(); });
+    COLAB_MATRICULAS=manter;
+    return true;
+  }
+  return false;
 }
 function saveColabMatriculas(){
   renderColabsDatalist();
@@ -1866,6 +1900,7 @@ function addColabMatricula(){
   const nome=nomeInp.value.trim();
   if(!cod||!nome){notify('Informe o código e o nome do separador.','error');return;}
   if(COLAB_MATRICULAS.some(o=>o.mat.toLowerCase()===cod.toLowerCase())){notify('Já existe um separador com esse código.','warn');return;}
+  if(COLAB_MATRICULAS.some(o=>o.nome.trim().toLowerCase()===nome.toLowerCase())){notify('Já existe um separador com esse nome.','warn');return;}
   COLAB_MATRICULAS.push({id:'cm'+Date.now()+Math.random().toString(36).slice(2,7),mat:cod,nome:nome});
   COLAB_MATRICULAS.sort((a,b)=>a.nome.localeCompare(b.nome));
   codInp.value='';
@@ -1884,6 +1919,7 @@ function removeColabMatricula(id){
 // valores atuais de cada linha da lista — disparado pelo botão geral "💾 Salvar Alterações".
 function salvarTodosColabMatriculas(){
   const codigosVistos={};
+  const nomesVistos={};
   for(const item of COLAB_MATRICULAS){
     const codEl=document.getElementById('colabmat-cod-'+item.id);
     const nomeEl=document.getElementById('colabmat-nome-'+item.id);
@@ -1891,9 +1927,12 @@ function salvarTodosColabMatriculas(){
     const cod=(codEl.value||'').trim();
     const nome=(nomeEl.value||'').trim();
     if(!cod||!nome){ notify('Nenhum código ou nome pode ficar vazio.','error'); return; }
-    const chave=cod.toLowerCase();
-    if(codigosVistos[chave]){ notify('Código "'+cod+'" está duplicado na lista.','warn'); return; }
-    codigosVistos[chave]=true;
+    const chaveCod=cod.toLowerCase();
+    if(codigosVistos[chaveCod]){ notify('Código "'+cod+'" está duplicado na lista.','warn'); return; }
+    codigosVistos[chaveCod]=true;
+    const chaveNome=nome.toLowerCase();
+    if(nomesVistos[chaveNome]){ notify('Nome "'+nome+'" está duplicado na lista.','warn'); return; }
+    nomesVistos[chaveNome]=true;
   }
   COLAB_MATRICULAS.forEach(item=>{
     const codEl=document.getElementById('colabmat-cod-'+item.id);
@@ -2007,7 +2046,7 @@ function addPedido(){
 function clearForm(){
   ['f-os','f-cargo','f-colab','f-vols'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-data').value=todayStr();
-  document.getElementById('f-tipo').value='';
+  document.getElementById('f-tipo').value='fechado';
   document.getElementById('f-status').value='normal';
   clearParticipantes();
 }
@@ -2071,6 +2110,7 @@ function openEditarPedido(id){
   const p=DB.find(x=>x.id===id);
   if(!p){notify('Pedido não encontrado.','error');return;}
   
+  document.getElementById('e-os').value=p.os||'';
   document.getElementById('e-cargo').value=p.cargo;
   document.getElementById('e-colab').value=p.colab;
   document.getElementById('e-data').value=p.data;
@@ -2096,6 +2136,7 @@ function salvarEdicaoPedido(){
   const p=DB.find(x=>x.id===editTarget);
   if(!p){notify('Pedido não encontrado.','error');return;}
   
+  const os=document.getElementById('e-os').value.trim();
   const cargo=document.getElementById('e-cargo').value.trim();
   const colab=document.getElementById('e-colab').value.trim();
   const data=document.getElementById('e-data').value;
@@ -2130,6 +2171,7 @@ function salvarEdicaoPedido(){
   saveColabs();
   
   // Atualizar dados
+  p.os=os;
   p.cargo=cargo;
   p.colab=colab;
   p.data=data;
