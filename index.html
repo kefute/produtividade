@@ -266,7 +266,7 @@ button:disabled:hover{background:inherit;color:inherit}
   </div>
   <div class="header-stats">
     <div class="hstat cyan"><div class="hstat-v" id="h-total">0</div><div class="hstat-l">Pedidos</div></div>
-    <div class="hstat orange"><div class="hstat-v" id="h-andamento">0</div><div class="hstat-l">Em Andamento</div></div>
+    <div class="hstat orange"><div class="hstat-v" id="h-abertos">0</div><div class="hstat-l">Em Aberto</div></div>
     <div class="hstat yellow"><div class="hstat-v" id="h-finalizados-hoje">0</div><div class="hstat-l">Finalizados Hoje</div></div>
     <div class="hstat green"><div class="hstat-v" id="h-finalizados">0</div><div class="hstat-l">Finalizados</div></div>
   </div>
@@ -326,7 +326,7 @@ button:disabled:hover{background:inherit;color:inherit}
   <div class="grid-4">
     <div class="card kpi c-cyan"><div class="card-title">Pedidos em Andamento</div><div class="kpi-val" id="d-qtd-andamento">0</div><div class="kpi-sub">total em aberto</div></div>
     <div class="card kpi c-green"><div class="card-title">Tempo Médio</div><div class="kpi-val" id="d-media">—</div><div class="kpi-sub">tempo médio geral (mm:ss)</div></div>
-    <div class="card kpi c-orange"><div class="card-title">Pedidos Prioritários</div><div class="kpi-val" id="d-prior">0</div><div class="kpi-sub">em andamento</div></div>
+    <div class="card kpi c-red"><div class="card-title">Pedidos Prioritários</div><div class="kpi-val" id="d-prior">0</div><div class="kpi-sub">em andamento</div></div>
     <div class="card kpi c-yellow"><div class="card-title">Finalizados Hoje</div><div class="kpi-val" id="d-hoje">0</div><div class="kpi-sub">pedidos concluídos hoje</div></div>
   </div>
   <div class="card" style="margin-bottom:18px">
@@ -2480,7 +2480,7 @@ function pedidoTipo(p){
 }
 function updateHeader(){
   document.getElementById('h-total').textContent=DB.length;
-  document.getElementById('h-andamento').textContent=DB.filter(x=>!x.finalizado).length;
+  document.getElementById('h-abertos').textContent=DB.filter(x=>pedidoTipo(x)==='aberto'&&!x.finalizado).length;
   document.getElementById('h-finalizados-hoje').textContent=DB.filter(x=>x.finalizado&&x.data===todayStr()).length;
   document.getElementById('h-finalizados').textContent=DB.filter(x=>x.finalizado).length;
 }
