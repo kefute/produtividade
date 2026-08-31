@@ -266,7 +266,7 @@ button:disabled:hover{background:inherit;color:inherit}
   </div>
   <div class="header-stats">
     <div class="hstat cyan"><div class="hstat-v" id="h-total">0</div><div class="hstat-l">Pedidos</div></div>
-    <div class="hstat orange"><div class="hstat-v" id="h-abertos">0</div><div class="hstat-l">Em Aberto</div></div>
+    <div class="hstat orange"><div class="hstat-v" id="h-andamento">0</div><div class="hstat-l">Em Andamento</div></div>
     <div class="hstat yellow"><div class="hstat-v" id="h-finalizados-hoje">0</div><div class="hstat-l">Finalizados Hoje</div></div>
     <div class="hstat green"><div class="hstat-v" id="h-finalizados">0</div><div class="hstat-l">Finalizados</div></div>
   </div>
@@ -2480,7 +2480,7 @@ function pedidoTipo(p){
 }
 function updateHeader(){
   document.getElementById('h-total').textContent=DB.length;
-  document.getElementById('h-abertos').textContent=DB.filter(x=>pedidoTipo(x)==='aberto'&&!x.finalizado).length;
+  document.getElementById('h-andamento').textContent=DB.filter(x=>!x.finalizado).length;
   document.getElementById('h-finalizados-hoje').textContent=DB.filter(x=>x.finalizado&&x.data===todayStr()).length;
   document.getElementById('h-finalizados').textContent=DB.filter(x=>x.finalizado).length;
 }
