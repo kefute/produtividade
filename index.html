@@ -214,6 +214,10 @@ button:disabled:hover{background:inherit;color:inherit}
 .emp-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.95);background:var(--surface);border:1px solid var(--green);border-radius:12px;padding:22px 32px;font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--green);letter-spacing:.4px;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:600;opacity:0;pointer-events:none;transition:opacity .35s ease,transform .35s ease;display:flex;align-items:center;gap:12px}
 .emp-toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
 .emp-toast .emp-toast-icon{font-size:26px}
+.os-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.95);background:var(--surface);border:1px solid var(--green);border-radius:12px;padding:22px 32px;font-family:var(--font-d);font-size:20px;font-weight:700;color:var(--green);letter-spacing:.4px;box-shadow:0 8px 30px rgba(0,0,0,.4);z-index:600;opacity:0;pointer-events:none;transition:opacity .35s ease,transform .35s ease;display:flex;align-items:center;gap:12px;max-width:90vw;text-align:center}
+.os-toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.os-toast .os-toast-icon{font-size:26px}
+.os-toast.error{border-color:var(--red);color:var(--red)}
 
 /* TAG tipo */
 .tipo-tag{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px}
@@ -311,7 +315,7 @@ button:disabled:hover{background:inherit;color:inherit}
     <div class="card-title" style="font-size:15px;color:var(--cyan);letter-spacing:.6px">⏱ Previsão de Conclusão por Pedido</div>
     <div style="display:flex;gap:22px;flex-wrap:wrap;font-size:12px;color:var(--text2);margin:8px 0 16px;align-items:center">
       <span>Pendentes: <b style="color:var(--cyan);font-size:14px" id="prev-pend">0</b></span>
-      <input type="text" id="prev-busca" oninput="renderPrevisao()" placeholder="🔎 Buscar por carregamento..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:180px">
+      <input type="text" id="prev-busca" oninput="renderPrevisao()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:180px">
     </div>
     <div id="prev-lista" style="max-height:420px;overflow-y:auto;overflow-x:hidden;padding-right:6px"><div class="empty"><div class="empty-s">Nenhum pedido pendente.</div></div></div>
   </div>
@@ -326,8 +330,13 @@ button:disabled:hover{background:inherit;color:inherit}
     <div class="card kpi c-yellow"><div class="card-title">Finalizados Hoje</div><div class="kpi-val" id="d-hoje">0</div><div class="kpi-sub">pedidos concluídos hoje</div></div>
   </div>
   <div class="card" style="margin-bottom:18px">
+    <div class="card-title">✓ Finalizar OS</div>
+    <input type="text" id="fin-os-input" onkeydown="finalizarOSEnter(event)" placeholder="🔎 Digite o número da OS e pressione Enter..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:8px 12px;color:var(--text);font-size:13px;outline:none;width:100%">
+  </div>
+
+  <div class="card" style="margin-bottom:18px">
     <div class="card-title">Pedidos em Andamento</div>
-    <input type="text" id="ativos-busca" oninput="renderAtivos()" placeholder="🔎 Buscar por carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;width:100%;margin-bottom:12px">
+    <input type="text" id="ativos-busca" oninput="renderAtivos()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;width:100%;margin-bottom:12px">
     <div id="dash-ativos" style="max-height:420px;overflow-y:auto;overflow-x:hidden"><div class="empty"><div class="empty-s">Nenhum pedido ativo no momento.</div></div></div>
   </div>
 
@@ -353,7 +362,7 @@ button:disabled:hover{background:inherit;color:inherit}
       <button type="button" class="btn-sec" style="font-size:12px" onclick="document.getElementById('filt-mes').value='';renderPedidos()">✕ Limpar mês</button>
       <input type="date" id="filt-dia" onchange="renderPedidos()" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none">
       <button type="button" class="btn-sec" style="font-size:12px" onclick="document.getElementById('filt-dia').value='';renderPedidos()">✕ Limpar dia</button>
-      <input type="text" id="filt-busca" oninput="renderPedidos()" placeholder="🔎 Buscar por carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:180px">
+      <input type="text" id="filt-busca" oninput="renderPedidos()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:180px">
     </div>
     <div class="tbl-wrap tbl-scroll" style="max-height:560px;overflow-y:auto">
       <table>
@@ -463,6 +472,9 @@ create policy "allow anon all" on logiflow_db
     <div class="popup-title">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="#00C9B1"><rect x="2" y="6" width="12" height="8" rx="2"/><rect x="14" y="9" width="4" height="5" rx="1"/><circle cx="4" cy="15" r="1.5"/><circle cx="11" cy="15" r="1.5"/><circle cx="17" cy="15" r="1.5"/></svg>
       Novo Pedido
+    </div>
+    <div class="form-row full">
+      <div class="field"><label>OS</label><input type="text" id="f-os" placeholder="Número da OS"></div>
     </div>
     <div class="form-row">
       <div class="field"><label>Carregamento</label><input type="text" id="f-cargo" placeholder="Ex: CRG-001"></div>
@@ -780,6 +792,7 @@ create policy "allow anon all" on logiflow_db
 <!-- NOTIFICAÇÃO -->
 <div class="notif" id="notif"></div>
 <div class="emp-toast" id="emp-toast"><span class="emp-toast-icon">✓</span><span id="emp-toast-msg"></span></div>
+<div class="os-toast" id="os-toast"><span class="os-toast-icon" id="os-toast-icon">✓</span><span id="os-toast-msg"></span></div>
 
 <script>
 // ═══════════════════════════════════════════
@@ -1967,6 +1980,7 @@ function collectParticipantesEdit(){
 //  CRUD
 // ═══════════════════════════════════════════
 function addPedido(){
+  const os=document.getElementById('f-os').value.trim();
   const cargo=document.getElementById('f-cargo').value.trim();
   const colab=document.getElementById('f-colab').value.trim();
   const data=document.getElementById('f-data').value;
@@ -1986,12 +2000,12 @@ function addPedido(){
   });
   COLABS.sort((a,b)=>a.localeCompare(b));
   saveColabs();
-  DB.push({id:Date.now()*1000+Math.floor(Math.random()*1000),cargo,colab,data,vols,tipo,status,inicio:nowStr(),termino:null,duracao:null,finalizado:false,dividido,participantes,pausado:false,pausadoDesde:null,tempoPausadoTotal:0});
+  DB.push({id:Date.now()*1000+Math.floor(Math.random()*1000),os,cargo,colab,data,vols,tipo,status,inicio:nowStr(),termino:null,duracao:null,finalizado:false,dividido,participantes,pausado:false,pausadoDesde:null,tempoPausadoTotal:0});
   closeOverlay('ov-new');clearForm();scheduleSync();refreshAll();
   notify('Pedido '+cargo+' registrado!','success');
 }
 function clearForm(){
-  ['f-cargo','f-colab','f-vols'].forEach(id=>document.getElementById(id).value='');
+  ['f-os','f-cargo','f-colab','f-vols'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('f-data').value=todayStr();
   document.getElementById('f-tipo').value='';
   document.getElementById('f-status').value='normal';
@@ -2275,6 +2289,36 @@ function finalizarPedido(){
   }
   finTarget=null;finMember=null;closeOverlay('ov-fin');scheduleSync();refreshAll();
 }
+// Campo "Finalizar OS" (acima de "Pedidos em Andamento"): ao pressionar Enter com uma
+// OS digitada, procura um pedido em andamento com essa OS e abre o mesmo popup usado ao
+// clicar manualmente em "Finalizar" (ov-fin), para permitir aplicar descontos de tempo
+// (almoço, café, container parado, outros motivos) e demais ajustes antes de confirmar.
+// Se não encontrar a OS entre os pedidos em andamento, avisa o usuário.
+function finalizarOSEnter(e){
+  if(e.key!=='Enter')return;
+  const input=e.target;
+  const val=input.value.trim();
+  if(!val){notify('Informe o número da OS.','error');return;}
+  const p=DB.find(x=>!x.finalizado && (x.os||'').trim().toLowerCase()===val.toLowerCase());
+  if(!p){showOSToast('OS "'+val+'" não encontrada entre os pedidos em andamento.','error');return;}
+  if(p.pausado){notify('O pedido da OS '+p.os+' está pausado. Retome antes de finalizar.','error');return;}
+  abrirFinalizacaoPorOS(p);
+  input.value='';
+}
+// Abre o popup de finalização (ov-fin) a partir de um pedido localizado pela OS.
+// Em pedidos divididos, abre a finalização do primeiro participante ainda pendente
+// (mesmo comportamento disponível manualmente por membro na tela de Ativos).
+function abrirFinalizacaoPorOS(p){
+  const isDiv=p.dividido&&p.participantes&&p.participantes.length;
+  if(isDiv){
+    const membros=getMembros(p);
+    const idx=membros.findIndex((m,i)=>!(p.conclusoes&&p.conclusoes[i]));
+    if(idx===-1){notify('Todos os participantes do pedido '+p.cargo+' já foram finalizados.','warn');return;}
+    openFinish(p.id,idx);
+  } else {
+    openFinish(p.id);
+  }
+}
 // Resolve (encerra de vez) um pedido/membro que ficou com falta registrada, sem reabrir a contagem de tempo
 function resolverFalta(id,memberIdx){
   const p=DB.find(x=>x.id===id);
@@ -2387,9 +2431,10 @@ function renderDashboard(){
   const tv=fins.reduce((a,p)=>a+p.vols,0),ts=fins.reduce((a,p)=>a+p.duracao,0);
   document.getElementById('d-media').textContent=tv>0?fmtMPS(ts/tv):'—';
 }
-// Verifica se um pedido corresponde ao termo buscado, considerando carregamento,
+// Verifica se um pedido corresponde ao termo buscado, considerando OS, carregamento,
 // colaborador e (em pedidos divididos) os nomes de todos os participantes.
 function matchBuscaPedido(x,busca){
+  if((x.os||'').toLowerCase().includes(busca)) return true;
   if((x.cargo||'').toLowerCase().includes(busca)) return true;
   if((x.colab||'').toLowerCase().includes(busca)) return true;
   if(x.dividido&&x.participantes&&x.participantes.length){
@@ -2647,7 +2692,7 @@ function desenhaCmpChart(serieColab, equipeByKey){
 }
 function renderPrevisao(){
   const busca=(document.getElementById('prev-busca')?.value||'').trim().toLowerCase();
-  const pend=DB.filter(x=>!x.finalizado&&(!busca||(x.cargo||'').toLowerCase().includes(busca)));
+  const pend=DB.filter(x=>!x.finalizado&&(!busca||matchBuscaPedido(x,busca)));
   const pendEl=document.getElementById('prev-pend');
   if(pendEl) pendEl.textContent=pend.length;
   const refSec={aberto:130,fechado:90},icons={aberto:'📥',fechado:'📦'},colors={aberto:'var(--cyan)',fechado:'var(--blue)'};
@@ -2734,7 +2779,7 @@ function renderFuncionarios(){
 // ═══════════════════════════════════════════
 //  OVERLAYS / NOTIF
 // ═══════════════════════════════════════════
-function openNewPedido(){document.getElementById('f-data').value=todayStr();clearParticipantes();openOverlay('ov-new');setTimeout(()=>document.getElementById('f-cargo').focus(),50);}
+function openNewPedido(){document.getElementById('f-data').value=todayStr();clearParticipantes();openOverlay('ov-new');setTimeout(()=>document.getElementById('f-os').focus(),50);}
 function openOverlay(id){document.getElementById(id).classList.add('open');}
 function closeOverlay(id){document.getElementById(id).classList.remove('open');}
 // Enter em campos de texto/número/data/hora dentro de um popup move o foco para o próximo campo,
@@ -2761,6 +2806,21 @@ document.addEventListener('keydown', function(e){
     if(btn) btn.focus();
   }
 });
+// Pop-up temporário central, com fade in/out, usado para a finalização de pedido
+// pelo campo "Finalizar OS" (sucesso) ou quando a OS não é encontrada (erro).
+let osToastTimer=null;
+function showOSToast(msg,type='success'){
+  const toast=document.getElementById('os-toast');
+  const msgEl=document.getElementById('os-toast-msg');
+  const iconEl=document.getElementById('os-toast-icon');
+  if(!toast||!msgEl) return;
+  toast.className='os-toast'+(type==='error'?' error':'');
+  if(iconEl) iconEl.textContent=type==='error'?'✕':'✓';
+  msgEl.textContent=msg;
+  toast.classList.add('show');
+  clearTimeout(osToastTimer);
+  osToastTimer=setTimeout(()=>{ toast.classList.remove('show'); },2000);
+}
 function notify(msg,type='info'){
   const el=document.getElementById('notif');
   el.className='notif '+type;
