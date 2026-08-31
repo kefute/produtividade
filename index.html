@@ -8,11 +8,11 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0D1B2A;--surface:#1E2D3D;--surface2:#263545;--surface3:#2E3F52;
-  --cyan:#00C9B1;--cyan2:#00a896;--orange:#FF6B35;--orange2:#e55a25;--blue:#3B82F6;--blue2:#2563EB;
+  --bg:#121212;--surface:#1A1A1A;--surface2:#222222;--surface3:#2A2A2A;
+  --cyan:#D8D8D8;--cyan2:#B0B0B0;--orange:#FF6B35;--orange2:#e55a25;--blue:#3B82F6;--blue2:#2563EB;
   --yellow:#FFD60A;--red:#FF4757;--green:#2ED573;
-  --text:#F0F4F8;--text2:#8FA3B1;--text3:#5A7285;
-  --border:#2E3F52;--border2:#3A5068;
+  --text:#F2F2F2;--text2:#9A9A9A;--text3:#6B6B6B;
+  --border:#2A2A2A;--border2:#3D3D3D;
   --font-d:'Barlow Condensed',sans-serif;--font:'Inter',sans-serif;
 }
 body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden}
@@ -64,7 +64,7 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 
 /* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
-.card-highlight{border:1px solid var(--cyan);box-shadow:0 0 0 1px rgba(0,201,177,.2),0 4px 18px rgba(0,201,177,.08);background:linear-gradient(180deg,rgba(0,201,177,.06),var(--surface) 60%);margin-bottom:18px}
+.card-highlight{border:1px solid var(--cyan);box-shadow:0 0 0 1px rgba(216,216,216,.2),0 4px 18px rgba(216,216,216,.08);background:linear-gradient(180deg,rgba(216,216,216,.06),var(--surface) 60%);margin-bottom:18px}
 .card-title{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:10px;font-weight:600}
 .kpi{padding:16px}
 .kpi-val{font-family:var(--font-d);font-size:36px;font-weight:800;line-height:1;margin-bottom:2px}
@@ -77,13 +77,13 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 
 /* BADGE */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
-.badge.open{background:rgba(0,201,177,.15);color:var(--cyan)}
+.badge.open{background:rgba(216,216,216,.15);color:var(--cyan)}
 .badge.closed{background:rgba(59,130,246,.15);color:var(--blue)}
 .badge.priority{background:rgba(255,71,87,.2);color:var(--red)}
 .badge.normal{background:rgba(94,114,129,.2);color:var(--text2)}
 .badge.done{background:rgba(46,213,115,.15);color:var(--green)}
 .badge.pending{background:rgba(255,214,10,.15);color:var(--yellow)}
-.badge.tipo-os{background:rgba(0,201,177,.15);color:var(--cyan)}
+.badge.tipo-os{background:rgba(216,216,216,.15);color:var(--cyan)}
 .badge.tipo-pick{background:rgba(255,107,53,.15);color:var(--orange)}
 
 /* COLAB CHIPS */
@@ -145,7 +145,7 @@ tr:last-child td{border-bottom:none}
 .form-row.full{grid-template-columns:1fr}
 .field label{display:block;font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
 .field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:9px 11px;color:var(--text);font-family:var(--font);font-size:13px;outline:none;transition:.15s}
-.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(0,201,177,.15)}
+.field input:focus,.field select:focus{border-color:var(--cyan);box-shadow:0 0 0 2px rgba(216,216,216,.15)}
 .field select option{background:var(--bg)}
 .popup-btns{display:flex;gap:10px;margin-top:18px}
 .btn-prim{flex:1;background:var(--cyan);color:var(--bg);border:none;padding:10px;border-radius:7px;font-family:var(--font-d);font-size:16px;font-weight:700;cursor:pointer;transition:.2s}
@@ -221,7 +221,7 @@ button:disabled:hover{background:inherit;color:inherit}
 
 /* TAG tipo */
 .tipo-tag{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 6px;border-radius:3px}
-.tipo-tag.aberto{background:rgba(0,201,177,.15);color:var(--cyan)}
+.tipo-tag.aberto{background:rgba(216,216,216,.15);color:var(--cyan)}
 .tipo-tag.fechado{background:rgba(59,130,246,.15);color:var(--blue)}
 
 
@@ -237,13 +237,13 @@ button:disabled:hover{background:inherit;color:inherit}
 .func-kpi-v{font-family:var(--font-d);font-size:18px;font-weight:800;color:var(--cyan);line-height:1.1}
 .func-kpi-l{font-size:10px;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
 .func-trend{font-size:12px;padding:7px 10px;border-radius:7px;background:var(--surface2);display:flex;align-items:center;gap:6px}
-.highlight-card{background:linear-gradient(135deg,rgba(0,201,177,.08),rgba(255,214,10,.05));border:1px solid var(--border2);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.highlight-card{background:linear-gradient(135deg,rgba(216,216,216,.08),rgba(255,214,10,.05));border:1px solid var(--border2);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px}
 .highlight-icon{font-size:22px}
 .highlight-title{font-size:11px;text-transform:uppercase;letter-spacing:.6px;color:var(--text2);font-weight:600}
 .highlight-name{font-family:var(--font-d);font-size:19px;font-weight:800;color:var(--text)}
 .highlight-val{font-size:12px;color:var(--text2)}
 
-.setup-banner{background:linear-gradient(135deg,rgba(0,201,177,.08),rgba(255,107,53,.06));border:1px solid var(--border2);border-radius:10px;padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;gap:16px}
+.setup-banner{background:linear-gradient(135deg,rgba(216,216,216,.08),rgba(255,107,53,.06));border:1px solid var(--border2);border-radius:10px;padding:16px 20px;margin-bottom:18px;display:flex;align-items:center;gap:16px}
 .setup-banner.hidden{display:none}
 .sync-btn{background:transparent;color:var(--green);border:1px solid var(--green);padding:7px 14px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:6px}
 .sync-btn:hover{background:var(--green);color:var(--bg)}
