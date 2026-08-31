@@ -993,22 +993,38 @@ function mergeColecao(remoteArr, localArr, tombMap, preferLocal){
       // feita neste aparelho (local) é sempre considerada a mais recente.
       byId[local.id]=local;
     } else {
-      // Item existe em ambos — usar versão mais recente baseado em terminoTs
-      const remoteTerminado = remote.termino && remote.terminoTs;
-      const localTerminado = local.termino && local.terminoTs;
-      
-      if(remoteTerminado && !localTerminado){
-        // Remoto foi finalizado, local ainda está aberto → usar remoto
+      // Item existe em ambos — usar versão mais recente.
+      // IMPORTANTE: usamos o campo "finalizado" (estado real exibido nos contadores do
+      // topo do app) como critério principal, e não apenas "termino"/"terminoTs" — um
+      // pedido com falta registrada tem "termino" preenchido mas "finalizado"=false, o
+      // que antes podia fazer a sincronização "reabrir" um pedido já finalizado em outro
+      // aparelho (ou vice-versa), deixando Em Aberto/Fechados/Finalizados divergentes.
+      const remoteFinal = !!remote.finalizado;
+      const localFinal = !!local.finalizado;
+      if(remoteFinal && !localFinal){
+        // Remoto foi finalizado, local ainda não → usar remoto
         byId[local.id]=remote;
-      } else if(localTerminado && !remoteTerminado){
-        // Local foi finalizado, remoto ainda está aberto → usar local
+      } else if(localFinal && !remoteFinal){
+        // Local foi finalizado, remoto ainda não → usar local
         byId[local.id]=local;
-      } else if(remoteTerminado && localTerminado){
-        // Ambos finalizados → usar o mais recente
-        byId[local.id]=(remote.terminoTs||0)>(local.terminoTs||0) ? remote : local;
+      } else if(remoteFinal && localFinal){
+        // Ambos finalizados → usar o mais recente (finalizadoEm, com fallback em terminoTs)
+        const rt=remote.finalizadoEm||remote.terminoTs||0, lt=local.finalizadoEm||local.terminoTs||0;
+        byId[local.id]=(rt>=lt) ? remote : local;
       } else {
-        // Nenhum finalizado → usar remoto (padrão)
-        byId[local.id]=remote;
+        // Nenhum finalizado de vez (pode haver falta registrada em um dos dois) →
+        // usar o que tiver termino/terminoTs mais recente; sem isso, usar remoto (padrão)
+        const remoteTerminado = remote.termino && remote.terminoTs;
+        const localTerminado = local.termino && local.terminoTs;
+        if(remoteTerminado && !localTerminado){
+          byId[local.id]=remote;
+        } else if(localTerminado && !remoteTerminado){
+          byId[local.id]=local;
+        } else if(remoteTerminado && localTerminado){
+          byId[local.id]=(remote.terminoTs||0)>(local.terminoTs||0) ? remote : local;
+        } else {
+          byId[local.id]=remote;
+        }
       }
     }
   });
@@ -2455,10 +2471,17 @@ function refreshAll(){
   if(empPage==='historico') renderEmpHistorico();
   if(empPage==='cadastro'){ empCheckOS(); empPopularSelects(); }
 }
+// Normaliza o tipo do pedido: pedidos antigos (importados/sincronizados de versões
+// anteriores do app) podem não ter o campo "tipo" preenchido. Sem essa normalização,
+// esses pedidos não entram nem em "Em Aberto" nem em "Fechados", mas continuam contando
+// no "Pedidos" (total), fazendo os números do topo do app parecerem divergentes.
+function pedidoTipo(p){
+  return p.tipo==='fechado' ? 'fechado' : 'aberto';
+}
 function updateHeader(){
   document.getElementById('h-total').textContent=DB.length;
-  document.getElementById('h-abertos').textContent=DB.filter(x=>x.tipo==='aberto'&&!x.finalizado).length;
-  document.getElementById('h-fechados').textContent=DB.filter(x=>x.tipo==='fechado'&&!x.finalizado).length;
+  document.getElementById('h-abertos').textContent=DB.filter(x=>pedidoTipo(x)==='aberto'&&!x.finalizado).length;
+  document.getElementById('h-fechados').textContent=DB.filter(x=>pedidoTipo(x)==='fechado'&&!x.finalizado).length;
   document.getElementById('h-finalizados').textContent=DB.filter(x=>x.finalizado).length;
 }
 function barH(label,val,max,color,valStr){
