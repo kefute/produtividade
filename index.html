@@ -2243,6 +2243,7 @@ function salvarEdicaoFinalizacao(){
   p.data=novaData;
   p.termino=novoTermino;
   p.terminoTs=Date.now(); // necessário p/ o merge de sincronização (mergeColecao) reconhecer a atualização
+  p.finalizadoEm=Date.now(); // idem: mergeColecao usa finalizadoEm como critério principal para pedidos já finalizados, então também precisa ser atualizado aqui, senão a edição pode ser sobrescrita pela versão remota antiga no próximo sync
   p.duracao=dur;
 
   closeOverlay('ov-edit-fin');
