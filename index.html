@@ -132,14 +132,14 @@ tr:last-child td{border-bottom:none}
 .rank-bar{height:3px;border-radius:2px;margin-top:3px}
 
 /* TIMELINE / PREVISÃO */
-.prev-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface2);border-radius:8px;margin-bottom:5px;gap:8px}
-.prev-left{display:flex;align-items:center;gap:8px}
-.prev-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
-.prev-cargo{font-size:12.5px;font-weight:500}
-.prev-collab{font-size:10.5px;color:var(--text2)}
+.prev-item{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;background:var(--surface2);border-radius:6px;margin-bottom:4px;gap:6px}
+.prev-left{display:flex;align-items:center;gap:6px}
+.prev-icon{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.prev-cargo{font-size:11.5px;font-weight:500}
+.prev-collab{font-size:9.5px;color:var(--text2)}
 .prev-eta{text-align:right}
-.prev-time{font-family:var(--font-d);font-size:13px;font-weight:700;color:var(--cyan)}
-.prev-label{font-size:9.5px;color:var(--text2)}
+.prev-time{font-family:var(--font-d);font-size:12px;font-weight:700;color:var(--cyan)}
+.prev-label{font-size:8.5px;color:var(--text2)}
 
 /* POPUP */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);opacity:0;pointer-events:none}
@@ -171,7 +171,7 @@ tr:last-child td{border-bottom:none}
 .sec-title span{font-size:13px;font-weight:400;color:var(--text2)}
 
 /* ACTION BTNS */
-.btn-fin{background:rgba(46,213,115,.15);color:var(--green);border:1px solid rgba(46,213,115,.3);padding:4px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-fin{background:rgba(46,213,115,.15);color:var(--green);border:1px solid rgba(46,213,115,.3);padding:3px 8px;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer}
 .btn-fin:hover{background:var(--green);color:var(--bg)}
 button:disabled{opacity:.4;cursor:not-allowed}
 button:disabled:hover{background:inherit;color:inherit}
@@ -285,13 +285,17 @@ button:disabled:hover{background:inherit;color:inherit}
     <div class="hstat yellow"><div class="hstat-v" id="h-finalizados-hoje">0</div><div class="hstat-l">Finalizados Hoje</div></div>
     <div class="hstat green"><div class="hstat-v" id="h-finalizados">0</div><div class="hstat-l">Finalizados</div></div>
   </div>
-  <button class="btn-add" onclick="openNewPedido()">＋ Novo Pedido</button>
-  <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3)">
-    <div id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div>
-    <span id="sync-label">local</span>
-  </div>
-  <button class="sync-btn" id="btn-sync" onclick="cloudSync()">☁ Sincronizar</button>
+  <button class="btn-add" onclick="openNewPedido()" style="flex-direction:column;align-items:center;gap:2px">
+    <span>＋ Novo Pedido</span>
+    <span style="font-size:9px;color:var(--text3);letter-spacing:.3px;font-weight:400">Shift + Espaço</span>
+  </button>
 </header>
+
+<!-- ÍCONE FLUTUANTE DE STATUS (NUVEM/LOCAL) -->
+<div id="sync-float" onclick="cloudSync()" title="local" style="position:fixed;left:18px;bottom:18px;z-index:500;width:40px;height:40px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.35);font-size:17px;transition:transform .15s"
+     onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+  <span id="sync-float-icon">💾</span>
+</div>
 
 <!-- SEÇÕES -->
 <div class="section-switch">
@@ -331,7 +335,8 @@ button:disabled:hover{background:inherit;color:inherit}
     <div class="card kpi c-green"><div class="card-title">Tempo Médio</div><div class="kpi-val" id="d-media">—</div><div class="kpi-sub">tempo médio (mm:ss)</div></div>
     <div class="card kpi-fin" style="border:1px solid var(--green);box-shadow:0 0 0 1px rgba(46,213,115,.25);background:linear-gradient(180deg,rgba(46,213,115,.08),var(--surface) 60%)">
       <div class="card-title" style="color:var(--green)">✓ Finalizar OS</div>
-      <input type="text" id="fin-os-input" onkeydown="finalizarOSEnter(event)" placeholder="🔎 Nº da OS + Enter" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-weight:600;outline:none;width:100%">
+      <input type="text" id="fin-os-input" onkeydown="finalizarOSEnter(event)" placeholder="🔎 Nº da OS" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-weight:600;outline:none;width:100%">
+      <div style="font-size:9px;color:var(--text3);margin-top:4px">Shift + Enter para focar aqui de qualquer lugar</div>
     </div>
     <div class="card kpi c-red"><div class="card-title">Pedidos Prioritários</div><div class="kpi-val" id="d-prior">0</div><div class="kpi-sub">em andamento</div></div>
     <div class="card kpi c-yellow"><div class="card-title">Finalizados Hoje</div><div class="kpi-val" id="d-hoje">0</div><div class="kpi-sub">pedidos concluídos</div></div>
@@ -344,8 +349,8 @@ button:disabled:hover{background:inherit;color:inherit}
       <div id="dash-ativos" style="max-height:380px;overflow-y:auto;overflow-x:hidden"><div class="empty"><div class="empty-s">Nenhum pedido ativo no momento.</div></div></div>
     </div>
 
-    <div class="card" style="border:none;box-shadow:0 4px 18px rgba(216,216,216,.08)">
-      <div class="card-title" style="font-size:13px;color:var(--cyan);letter-spacing:.6px">⏱ Previsão de Conclusão por Pedido</div>
+    <div class="card">
+      <div class="card-title" style="color:var(--cyan)">⏱ Previsão de Conclusão por Pedido</div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin:6px 0 12px;align-items:center">
         <span>Pendentes: <b style="color:var(--cyan);font-size:13px" id="prev-pend">0</b></span>
         <input type="text" id="prev-busca" oninput="renderPrevisao()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:140px">
@@ -381,9 +386,13 @@ button:disabled:hover{background:inherit;color:inherit}
         <option value="finalizado">Finalizados</option>
       </select>
       <input type="month" id="filt-mes" onchange="onFiltroTodosChange()" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none">
-      <button type="button" class="btn-sec" style="font-size:12px" onclick="document.getElementById('filt-mes').value='';onFiltroTodosChange()">✕ Limpar mês</button>
-      <input type="date" id="filt-dia" onchange="onFiltroTodosChange()" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none">
-      <button type="button" class="btn-sec" style="font-size:12px" onclick="document.getElementById('filt-dia').value='';onFiltroTodosChange()">✕ Limpar dia</button>
+      <span style="display:flex;align-items:center;gap:6px;background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:2px 10px">
+        <span style="font-size:11px;color:var(--text2)">Período:</span>
+        <input type="date" id="filt-periodo-ini" onchange="onFiltroTodosChange()" style="background:transparent;border:none;color:var(--text);font-size:12px;outline:none;padding:4px 0">
+        <span style="font-size:11px;color:var(--text2)">até</span>
+        <input type="date" id="filt-periodo-fim" onchange="onFiltroTodosChange()" style="background:transparent;border:none;color:var(--text);font-size:12px;outline:none;padding:4px 0">
+      </span>
+      <button type="button" class="btn-sec" style="font-size:12px" onclick="document.getElementById('filt-periodo-ini').value='';document.getElementById('filt-periodo-fim').value='';onFiltroTodosChange()">✕ Limpar período</button>
       <input type="text" id="filt-busca" oninput="onFiltroTodosChange()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:180px">
     </div>
     <div class="tbl-wrap tbl-scroll" style="max-height:560px;overflow-y:auto">
@@ -473,6 +482,13 @@ create policy "allow anon all" on logiflow_db
     <div class="card">
       <div class="card-title">📋 Status da Conexão</div>
       <div id="conn-status" style="font-size:13px;line-height:2;color:var(--text2)">Carregando...</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-top:6px">
+        <button class="sync-btn" id="btn-sync" onclick="cloudSync()">☁ Sincronizar</button>
+        <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3)">
+          <div id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:var(--text3)"></div>
+          <span id="sync-label">local</span>
+        </div>
+      </div>
       <hr style="border:none;border-top:1px solid var(--border);margin:16px 0">
       <div class="card-title">💾 Backup & Dados</div>
       <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.6">
@@ -1265,8 +1281,17 @@ function setSyncStatus(state){
   const lbl=document.getElementById('sync-label');
   const colors={ok:'var(--green)',loading:'var(--yellow)',error:'var(--red)',local:'var(--text3)'};
   const labels={ok:'nuvem ✓',loading:'sincronizando...',error:'erro na nuvem',local:'local'};
-  dot.style.background=colors[state]||colors.local;
-  lbl.textContent=labels[state]||labels.local;
+  if(dot) dot.style.background=colors[state]||colors.local;
+  if(lbl) lbl.textContent=labels[state]||labels.local;
+  const floatIcon=document.getElementById('sync-float-icon');
+  const floatBtn=document.getElementById('sync-float');
+  if(floatIcon && floatBtn){
+    const icons={ok:'☁️',loading:'🔄',error:'⚠️',local:'💾'};
+    const borderColors={ok:'var(--green)',loading:'var(--yellow)',error:'var(--red)',local:'var(--border2)'};
+    floatIcon.textContent=icons[state]||icons.local;
+    floatBtn.style.borderColor=borderColors[state]||borderColors.local;
+    floatBtn.title=(labels[state]||labels.local)+' — clique para sincronizar';
+  }
 }
 
 function updateConfigUI(){
@@ -2593,7 +2618,8 @@ function renderPedidos(){
   const status=document.getElementById('filt-status')?.value||'';
   const fin=document.getElementById('filt-fin')?.value||'';
   const mes=document.getElementById('filt-mes')?.value||'';
-  const dia=document.getElementById('filt-dia')?.value||'';
+  const periodoIni=document.getElementById('filt-periodo-ini')?.value||'';
+  const periodoFim=document.getElementById('filt-periodo-fim')?.value||'';
   const busca=(document.getElementById('filt-busca')?.value||'').trim().toLowerCase();
   let data=[...DB];
   if(tipo) data=data.filter(x=>x.tipo===tipo);
@@ -2601,7 +2627,8 @@ function renderPedidos(){
   if(fin==='pendente') data=data.filter(x=>!x.finalizado);
   if(fin==='finalizado') data=data.filter(x=>x.finalizado);
   if(mes) data=data.filter(x=>x.data && x.data.slice(0,7)===mes);
-  if(dia) data=data.filter(x=>x.data===dia);
+  if(periodoIni) data=data.filter(x=>x.data && x.data>=periodoIni);
+  if(periodoFim) data=data.filter(x=>x.data && x.data<=periodoFim);
   if(busca) data=data.filter(x=>matchBuscaPedido(x,busca));
   
   // Ordenar: pendentes primeiro (por ordem de adição), depois finalizados (por ordem de finalização, mais recentes no final)
@@ -2827,11 +2854,11 @@ function renderPrevisao(){
     const barColor=p.pausado?'var(--yellow)':atrasado?'var(--red)':colors[p.tipo];
     const itemStyle=p.pausado?'border:1px solid rgba(255,214,10,.4);background:rgba(255,214,10,.06)':atrasado?'border:1px solid var(--red);background:rgba(255,71,87,.1);box-shadow:0 0 0 1px rgba(255,71,87,.25)':'';
     const isDiv=p.dividido&&p.participantes&&p.participantes.length;
-    const finBtn=p.falta?'<button class="btn-fin" style="margin-top:5px;background:var(--red);border-color:var(--red)" onclick="resolverFalta('+p.id+')">⚠ Resolver Falta</button>':'<button class="btn-fin" style="margin-top:5px" onclick="openFinish('+p.id+')" '+(p.pausado?'disabled title="Retome o pedido para finalizar"':'')+'>✓ Finalizar</button>';
-    const acaoHtml=(isDiv?membrosAcaoHtml(p):finBtn)+(p.tempoParado?'':'<div style="margin-top:5px">'+pausaBtnHtml(p)+'</div>');
+    const finBtn=p.falta?'<button class="btn-fin" style="margin-top:3px;background:var(--red);border-color:var(--red)" onclick="resolverFalta('+p.id+')">⚠ Falta</button>':'<button class="btn-fin" style="margin-top:3px" onclick="openFinish('+p.id+')" '+(p.pausado?'disabled title="Retome o pedido para finalizar"':'')+'>✓ Finalizar</button>';
+    const acaoHtml=(isDiv?membrosAcaoHtml(p):finBtn)+(p.tempoParado?'':'<div style="margin-top:3px">'+pausaBtnHtml(p)+'</div>');
     const unidade=p.tipo==='fechado'?'cxs':'refs';
     const etaHtml=p.tempoParado?'⚠ Falta':(p.pausado?'⏸ Pausado':(atrasado?'⚡ Atrasado':eta));
-    return '<div class="prev-item" style="'+(p.tempoParado?'border:1px solid var(--red);background:rgba(255,71,87,.1);box-shadow:0 0 0 1px rgba(255,71,87,.25)':itemStyle)+'"><div class="prev-left"><div class="prev-icon" style="background:'+colors[p.tipo]+'22;font-size:14px">'+icons[p.tipo]+'</div><div><div class="prev-cargo"><b>'+p.cargo+'</b> &nbsp; <span class="tipo-tag '+p.tipo+'">'+p.tipo+'</span>'+(p.tempoParado?' <span class="badge" style="background:rgba(255,71,87,.18);color:var(--red)">⚠ Falta registrada</span>':(p.pausado?' <span class="badge" style="background:rgba(255,214,10,.15);color:var(--yellow)">⏸ Pausado</span>':(atrasado?' <span class="badge priority">⚠ Atrasado</span>':'')))+(isDiv?' <span class="split-icon" title="Pedido dividido">👥</span>':'')+'</div><div class="prev-collab">'+p.colab+' · '+p.vols+' '+unidade+' · início: '+p.inicio+' · <span class="badge '+p.status+'">'+p.status+'</span></div><div class="progress-bar" style="width:160px;margin-top:3px"><div class="progress-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div><div style="font-size:9px;color:var(--text3);margin-top:1px">'+pct+'% estimado concluído</div></div></div><div class="prev-eta"><div class="prev-time" style="color:'+barColor+(atrasado?';font-weight:800':'')+'">'+etaHtml+'</div><div class="prev-label">previsão de conclusão</div><div style="font-size:10px;color:var(--text3);margin-top:1px">Restam '+fmtSec(rem)+'</div>'+acaoHtml+'</div></div>';
+    return '<div class="prev-item" style="'+(p.tempoParado?'border:1px solid var(--red);background:rgba(255,71,87,.1);box-shadow:0 0 0 1px rgba(255,71,87,.25)':itemStyle)+'"><div class="prev-left"><div class="prev-icon" style="background:'+colors[p.tipo]+'22;font-size:12px">'+icons[p.tipo]+'</div><div><div class="prev-cargo"><b>'+p.cargo+'</b> &nbsp; <span class="tipo-tag '+p.tipo+'">'+p.tipo+'</span>'+(p.tempoParado?' <span class="badge" style="background:rgba(255,71,87,.18);color:var(--red)">⚠ Falta registrada</span>':(p.pausado?' <span class="badge" style="background:rgba(255,214,10,.15);color:var(--yellow)">⏸ Pausado</span>':(atrasado?' <span class="badge priority">⚠ Atrasado</span>':'')))+(isDiv?' <span class="split-icon" title="Pedido dividido">👥</span>':'')+'</div><div class="prev-collab">'+p.colab+' · '+p.vols+' '+unidade+' · início: '+p.inicio+' · <span class="badge '+p.status+'">'+p.status+'</span></div><div class="progress-bar" style="width:100px;height:3px;margin-top:2px"><div class="progress-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div></div></div><div class="prev-eta"><div class="prev-time" style="color:'+barColor+(atrasado?';font-weight:800':'')+'">'+etaHtml+'</div><div class="prev-label">Restam '+fmtSec(rem)+'</div>'+acaoHtml+'</div></div>';
   }).join('');
   const lista=document.getElementById('prev-lista'); if(lista) lista.innerHTML=html;
 }
@@ -2899,6 +2926,34 @@ function renderFuncionarios(){
 //  OVERLAYS / NOTIF
 // ═══════════════════════════════════════════
 function openNewPedido(){document.getElementById('f-data').value=todayStr();clearParticipantes();openOverlay('ov-new');setTimeout(()=>document.getElementById('f-os').focus(),50);}
+
+// ═══════════════════════════════════════════
+//  ATALHOS DE TECLADO GLOBAIS
+//  Shift+Enter -> foca a caixa "Finalizar OS"
+//  Shift+Espaço -> abre o popup de Novo Pedido
+// ═══════════════════════════════════════════
+document.addEventListener('keydown', function(e){
+  if(!e.shiftKey) return;
+  const ae=document.activeElement;
+  const tag=ae?ae.tagName:'';
+  const isEditable=tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||(ae&&ae.isContentEditable);
+
+  if(e.key==='Enter'){
+    const finInput=document.getElementById('fin-os-input');
+    if(finInput && ae!==finInput){
+      e.preventDefault();
+      if(typeof showSection==='function') showSection('operadores');
+      finInput.focus();
+      finInput.select();
+    }
+    return;
+  }
+
+  if((e.code==='Space'||e.key===' ') && !isEditable){
+    e.preventDefault();
+    openNewPedido();
+  }
+});
 function openOverlay(id){document.getElementById(id).classList.add('open');}
 function closeOverlay(id){document.getElementById(id).classList.remove('open');}
 // Enter em campos de texto/número/data/hora dentro de um popup move o foco para o próximo campo,
