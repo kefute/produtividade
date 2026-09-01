@@ -54,10 +54,12 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .page.active{display:block}
 /* GRID */
 .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:18px}
 .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px}
 .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:1fr 1fr}}
-@media(max-width:700px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}}
+@media(max-width:1100px){.grid-4{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:1fr 1fr}.grid-5{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}.grid-5{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.grid-5{grid-template-columns:1fr}}
 
 /* CARDS */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
@@ -71,6 +73,13 @@ header{background:var(--surface);border-bottom:1px solid var(--border);padding:0
 .kpi.c-yellow .kpi-val{color:var(--yellow)}
 .kpi.c-green .kpi-val{color:var(--green)}
 .kpi.c-red .kpi-val{color:var(--red)}
+/* Versão compacta dos KPIs quando exibidos junto com o Finalizar OS na grid-5 */
+.grid-5 .card{padding:10px}
+.grid-5 .kpi{padding:10px}
+.grid-5 .card-title{font-size:9.5px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid-5 .kpi-val{font-size:22px}
+.grid-5 .kpi-sub{font-size:9.5px;line-height:1.2}
+.grid-5 .kpi-fin input{padding:8px 9px;font-size:12px}
 
 /* BADGE */
 .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:600}
@@ -123,14 +132,14 @@ tr:last-child td{border-bottom:none}
 .rank-bar{height:3px;border-radius:2px;margin-top:3px}
 
 /* TIMELINE / PREVISÃO */
-.prev-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--surface2);border-radius:8px;margin-bottom:8px;gap:10px}
-.prev-left{display:flex;align-items:center;gap:10px}
-.prev-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px}
-.prev-cargo{font-size:13px;font-weight:500}
-.prev-collab{font-size:11px;color:var(--text2)}
+.prev-item{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:var(--surface2);border-radius:8px;margin-bottom:5px;gap:8px}
+.prev-left{display:flex;align-items:center;gap:8px}
+.prev-icon{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.prev-cargo{font-size:12.5px;font-weight:500}
+.prev-collab{font-size:10.5px;color:var(--text2)}
 .prev-eta{text-align:right}
-.prev-time{font-family:var(--font-d);font-size:14px;font-weight:700;color:var(--cyan)}
-.prev-label{font-size:10px;color:var(--text2)}
+.prev-time{font-family:var(--font-d);font-size:13px;font-weight:700;color:var(--cyan)}
+.prev-label{font-size:9.5px;color:var(--text2)}
 
 /* POPUP */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);opacity:0;pointer-events:none}
@@ -168,6 +177,15 @@ button:disabled{opacity:.4;cursor:not-allowed}
 button:disabled:hover{background:inherit;color:inherit}
 .btn-del{background:rgba(255,71,87,.1);color:var(--red);border:1px solid rgba(255,71,87,.2);padding:4px 8px;border-radius:5px;font-size:11px;cursor:pointer}
 .btn-del:hover{background:var(--red);color:#fff}
+
+/* PEDIDOS EM ANDAMENTO — linha compacta, tudo numa linha horizontal */
+#dash-ativos table{font-size:12px}
+#dash-ativos th,#dash-ativos td{padding:7px 8px}
+#dash-ativos .acao-cell{display:flex;gap:4px;flex-wrap:nowrap;white-space:nowrap;align-items:center}
+#dash-ativos .acao-cell button{padding:3px 7px;font-size:10.5px;white-space:nowrap;flex-shrink:0}
+#dash-ativos .badge{padding:2px 7px;font-size:10px;white-space:nowrap}
+#dash-ativos .tipo-tag{white-space:nowrap}
+#dash-ativos .td-time{font-size:13px}
 
 /* TIMER LIVE */
 .timer-live{font-family:var(--font-d);font-size:13px;color:var(--yellow);font-weight:600}
@@ -308,30 +326,32 @@ button:disabled:hover{background:inherit;color:inherit}
 
 <!-- PEDIDOS EM ANDAMENTO -->
 <div id="page-pedidos" class="page active">
-  <div class="grid-4">
+  <div class="grid-5">
     <div class="card kpi c-cyan"><div class="card-title">Pedidos em Andamento</div><div class="kpi-val" id="d-qtd-andamento">0</div><div class="kpi-sub">total em aberto</div></div>
-    <div class="card kpi c-green"><div class="card-title">Tempo Médio</div><div class="kpi-val" id="d-media">—</div><div class="kpi-sub">tempo médio geral (mm:ss)</div></div>
-    <div class="card kpi c-red"><div class="card-title">Pedidos Prioritários</div><div class="kpi-val" id="d-prior">0</div><div class="kpi-sub">em andamento</div></div>
-    <div class="card kpi c-yellow"><div class="card-title">Finalizados Hoje</div><div class="kpi-val" id="d-hoje">0</div><div class="kpi-sub">pedidos concluídos hoje</div></div>
-  </div>
-  <div class="card card-highlight" style="margin-bottom:18px;border-color:var(--green);box-shadow:0 0 0 1px rgba(46,213,115,.25),0 4px 18px rgba(46,213,115,.10);background:linear-gradient(180deg,rgba(46,213,115,.08),var(--surface) 60%)">
-    <div class="card-title" style="font-size:16px;color:var(--green);letter-spacing:.6px">✓ Finalizar OS</div>
-    <input type="text" id="fin-os-input" onkeydown="finalizarOSEnter(event)" placeholder="🔎 Digite o número da OS e pressione Enter..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:16px 18px;color:var(--text);font-size:18px;font-weight:600;outline:none;width:100%">
-  </div>
-
-  <div class="card" style="margin-bottom:18px">
-    <div class="card-title">Pedidos em Andamento</div>
-    <input type="text" id="ativos-busca" oninput="renderAtivos()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;width:100%;margin-bottom:12px">
-    <div id="dash-ativos" style="max-height:420px;overflow-y:auto;overflow-x:hidden"><div class="empty"><div class="empty-s">Nenhum pedido ativo no momento.</div></div></div>
-  </div>
-
-  <div class="card card-highlight" style="border:none;box-shadow:0 4px 18px rgba(216,216,216,.08)">
-    <div class="card-title" style="font-size:15px;color:var(--cyan);letter-spacing:.6px">⏱ Previsão de Conclusão por Pedido</div>
-    <div style="display:flex;gap:22px;flex-wrap:wrap;font-size:12px;color:var(--text2);margin:8px 0 16px;align-items:center">
-      <span>Pendentes: <b style="color:var(--cyan);font-size:14px" id="prev-pend">0</b></span>
-      <input type="text" id="prev-busca" oninput="renderPrevisao()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:180px">
+    <div class="card kpi c-green"><div class="card-title">Tempo Médio</div><div class="kpi-val" id="d-media">—</div><div class="kpi-sub">tempo médio (mm:ss)</div></div>
+    <div class="card kpi-fin" style="border:1px solid var(--green);box-shadow:0 0 0 1px rgba(46,213,115,.25);background:linear-gradient(180deg,rgba(46,213,115,.08),var(--surface) 60%)">
+      <div class="card-title" style="color:var(--green)">✓ Finalizar OS</div>
+      <input type="text" id="fin-os-input" onkeydown="finalizarOSEnter(event)" placeholder="🔎 Nº da OS + Enter" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-weight:600;outline:none;width:100%">
     </div>
-    <div id="prev-lista" style="max-height:420px;overflow-y:auto;overflow-x:hidden;padding-right:6px"><div class="empty"><div class="empty-s">Nenhum pedido pendente.</div></div></div>
+    <div class="card kpi c-red"><div class="card-title">Pedidos Prioritários</div><div class="kpi-val" id="d-prior">0</div><div class="kpi-sub">em andamento</div></div>
+    <div class="card kpi c-yellow"><div class="card-title">Finalizados Hoje</div><div class="kpi-val" id="d-hoje">0</div><div class="kpi-sub">pedidos concluídos</div></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Pedidos em Andamento</div>
+      <input type="text" id="ativos-busca" oninput="renderAtivos()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;width:100%;margin-bottom:12px">
+      <div id="dash-ativos" style="max-height:380px;overflow-y:auto;overflow-x:hidden"><div class="empty"><div class="empty-s">Nenhum pedido ativo no momento.</div></div></div>
+    </div>
+
+    <div class="card" style="border:none;box-shadow:0 4px 18px rgba(216,216,216,.08)">
+      <div class="card-title" style="font-size:13px;color:var(--cyan);letter-spacing:.6px">⏱ Previsão de Conclusão por Pedido</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--text2);margin:6px 0 12px;align-items:center">
+        <span>Pendentes: <b style="color:var(--cyan);font-size:13px" id="prev-pend">0</b></span>
+        <input type="text" id="prev-busca" oninput="renderPrevisao()" placeholder="🔎 Buscar por OS, carregamento ou colaborador..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:6px 10px;color:var(--text);font-size:12px;outline:none;flex:1;min-width:140px">
+      </div>
+      <div id="prev-lista" style="max-height:380px;overflow-y:auto;overflow-x:hidden;padding-right:6px"><div class="empty"><div class="empty-s">Nenhum pedido pendente.</div></div></div>
+    </div>
   </div>
 </div>
 
@@ -2545,15 +2565,15 @@ function renderAtivos(){
   const busca=(document.getElementById('ativos-busca')?.value||'').trim().toLowerCase();
   const ativos=DB.filter(x=>!x.finalizado&&(!busca||matchBuscaPedido(x,busca)));
   document.getElementById('dash-ativos').innerHTML=ativos.length?
-    '<div class="tbl-wrap"><table><thead><tr><th>Carregamento</th><th>Colaborador</th><th>Tipo</th><th>Status</th><th>Volumes</th><th>Início</th><th>Tempo Decorrido</th><th>Ação</th></tr></thead><tbody>'+
+    '<div class="tbl-wrap"><table><thead><tr><th>Carregamento</th><th>Colaborador</th><th>Tipo</th><th>Status</th><th>Vols</th><th>Início</th><th>Decorrido</th><th>Ação</th></tr></thead><tbody>'+
     ativos.map(p=>{
       const isDiv=p.dividido&&p.participantes&&p.participantes.length;
-      const editBtn='<button class="btn-edit" onclick="openEditarPedido('+p.id+')" style="background:var(--orange);color:var(--bg);border:none;padding:6px 10px;border-radius:4px;font-size:11px;font-weight:600;cursor:pointer">✎ Editar</button>';
-      const delBtn='<button class="btn-del" onclick="deletePedido('+p.id+')">✕ Cancelar</button>';
-      const acaoCell=(isDiv?membrosAcaoHtml(p):(p.falta?'<button class="btn-fin" style="background:var(--red);border-color:var(--red)" onclick="resolverFalta('+p.id+')">⚠ Resolver Falta</button>':'<button class="btn-fin" onclick="openFinish('+p.id+')" '+(p.pausado?'disabled title="Retome o pedido para finalizar"':'')+'>✓ Finalizar</button>'))+' '+(p.tempoParado?'':pausaBtnHtml(p))+' '+editBtn+' '+delBtn;
+      const editBtn='<button class="btn-edit" onclick="openEditarPedido('+p.id+')" style="background:var(--orange);color:var(--bg);border:none;padding:3px 7px;border-radius:4px;font-size:10.5px;font-weight:600;cursor:pointer">✎ Edit.</button>';
+      const delBtn='<button class="btn-del" onclick="deletePedido('+p.id+')" title="Cancelar">✕</button>';
+      const acaoCell=(isDiv?membrosAcaoHtml(p):(p.falta?'<button class="btn-fin" style="background:var(--red);border-color:var(--red)" onclick="resolverFalta('+p.id+')">⚠ Falta</button>':'<button class="btn-fin" onclick="openFinish('+p.id+')" '+(p.pausado?'disabled title="Retome o pedido para finalizar"':'')+'>✓ Fin.</button>'))+(p.tempoParado?'':pausaBtnHtml(p))+editBtn+delBtn;
       const rowStyle=p.pausado?' style="opacity:.75"':'';
       const faltaBadge=p.falta?' <span class="badge" style="background:rgba(255,71,87,.18);color:var(--red)">⚠ Falta</span>':'';
-      return '<tr'+rowStyle+'><td><b>'+p.cargo+'</b>'+(isDiv?' <span class="split-icon" title="Pedido dividido">👥</span>':'')+(p.pausado?' <span class="badge" style="background:rgba(255,214,10,.15);color:var(--yellow)">⏸ Pausado</span>':'')+faltaBadge+'</td><td>'+p.colab+'</td><td><span class="tipo-tag '+p.tipo+'">'+(p.tipo==='aberto'?'Aberto':'Fechado')+'</span></td><td><span class="badge '+p.status+'">'+(p.status==='prioridade'?'🔴 Prioridade':'Normal')+'</span></td><td>'+p.vols+'</td><td>'+p.inicio+'</td><td><span class="timer-live" data-id="'+p.id+'" style="'+(p.pausado?'color:var(--yellow)':(p.tempoParado?'color:var(--red)':''))+'">'+(p.tempoParado?'⚠ ':(p.pausado?'⏸ ':''))+fmtSec(calcElapsedPedido(p))+'</span></td><td style="display:flex;gap:6px;flex-wrap:wrap">'+acaoCell+'</td></tr>';
+      return '<tr'+rowStyle+'><td><b>'+p.cargo+'</b>'+(isDiv?' <span class="split-icon" title="Pedido dividido">👥</span>':'')+(p.pausado?' <span class="badge" style="background:rgba(255,214,10,.15);color:var(--yellow)">⏸ Pausado</span>':'')+faltaBadge+'</td><td>'+p.colab+'</td><td><span class="tipo-tag '+p.tipo+'">'+(p.tipo==='aberto'?'Aberto':'Fechado')+'</span></td><td><span class="badge '+p.status+'">'+(p.status==='prioridade'?'🔴 Prior.':'Normal')+'</span></td><td>'+p.vols+'</td><td>'+p.inicio+'</td><td><span class="timer-live" data-id="'+p.id+'" style="'+(p.pausado?'color:var(--yellow)':(p.tempoParado?'color:var(--red)':''))+'">'+(p.tempoParado?'⚠ ':(p.pausado?'⏸ ':''))+fmtSec(calcElapsedPedido(p))+'</span></td><td><div class="acao-cell">'+acaoCell+'</div></td></tr>';
     }).join('')+
     '</tbody></table></div>':
     '<div class="empty"><div class="empty-s">Nenhum pedido ativo.</div></div>';
@@ -2807,11 +2827,11 @@ function renderPrevisao(){
     const barColor=p.pausado?'var(--yellow)':atrasado?'var(--red)':colors[p.tipo];
     const itemStyle=p.pausado?'border:1px solid rgba(255,214,10,.4);background:rgba(255,214,10,.06)':atrasado?'border:1px solid var(--red);background:rgba(255,71,87,.1);box-shadow:0 0 0 1px rgba(255,71,87,.25)':'';
     const isDiv=p.dividido&&p.participantes&&p.participantes.length;
-    const finBtn=p.falta?'<button class="btn-fin" style="margin-top:8px;background:var(--red);border-color:var(--red)" onclick="resolverFalta('+p.id+')">⚠ Resolver Falta</button>':'<button class="btn-fin" style="margin-top:8px" onclick="openFinish('+p.id+')" '+(p.pausado?'disabled title="Retome o pedido para finalizar"':'')+'>✓ Finalizar</button>';
-    const acaoHtml=(isDiv?membrosAcaoHtml(p):finBtn)+(p.tempoParado?'':'<div style="margin-top:8px">'+pausaBtnHtml(p)+'</div>');
+    const finBtn=p.falta?'<button class="btn-fin" style="margin-top:5px;background:var(--red);border-color:var(--red)" onclick="resolverFalta('+p.id+')">⚠ Resolver Falta</button>':'<button class="btn-fin" style="margin-top:5px" onclick="openFinish('+p.id+')" '+(p.pausado?'disabled title="Retome o pedido para finalizar"':'')+'>✓ Finalizar</button>';
+    const acaoHtml=(isDiv?membrosAcaoHtml(p):finBtn)+(p.tempoParado?'':'<div style="margin-top:5px">'+pausaBtnHtml(p)+'</div>');
     const unidade=p.tipo==='fechado'?'cxs':'refs';
     const etaHtml=p.tempoParado?'⚠ Falta':(p.pausado?'⏸ Pausado':(atrasado?'⚡ Atrasado':eta));
-    return '<div class="prev-item" style="'+(p.tempoParado?'border:1px solid var(--red);background:rgba(255,71,87,.1);box-shadow:0 0 0 1px rgba(255,71,87,.25)':itemStyle)+'"><div class="prev-left"><div class="prev-icon" style="background:'+colors[p.tipo]+'22;font-size:18px">'+icons[p.tipo]+'</div><div><div class="prev-cargo"><b>'+p.cargo+'</b> &nbsp; <span class="tipo-tag '+p.tipo+'">'+p.tipo+'</span>'+(p.tempoParado?' <span class="badge" style="background:rgba(255,71,87,.18);color:var(--red)">⚠ Falta registrada</span>':(p.pausado?' <span class="badge" style="background:rgba(255,214,10,.15);color:var(--yellow)">⏸ Pausado</span>':(atrasado?' <span class="badge priority">⚠ Atrasado</span>':'')))+(isDiv?' <span class="split-icon" title="Pedido dividido">👥</span>':'')+'</div><div class="prev-collab">'+p.colab+' · '+p.vols+' '+unidade+' · início: '+p.inicio+' · <span class="badge '+p.status+'">'+p.status+'</span></div><div class="progress-bar" style="width:200px;margin-top:5px"><div class="progress-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div><div style="font-size:10px;color:var(--text3);margin-top:2px">'+pct+'% estimado concluído</div></div></div><div class="prev-eta"><div class="prev-time" style="color:'+barColor+(atrasado?';font-weight:800':'')+'">'+etaHtml+'</div><div class="prev-label">previsão de conclusão</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Restam '+fmtSec(rem)+'</div>'+acaoHtml+'</div></div>';
+    return '<div class="prev-item" style="'+(p.tempoParado?'border:1px solid var(--red);background:rgba(255,71,87,.1);box-shadow:0 0 0 1px rgba(255,71,87,.25)':itemStyle)+'"><div class="prev-left"><div class="prev-icon" style="background:'+colors[p.tipo]+'22;font-size:14px">'+icons[p.tipo]+'</div><div><div class="prev-cargo"><b>'+p.cargo+'</b> &nbsp; <span class="tipo-tag '+p.tipo+'">'+p.tipo+'</span>'+(p.tempoParado?' <span class="badge" style="background:rgba(255,71,87,.18);color:var(--red)">⚠ Falta registrada</span>':(p.pausado?' <span class="badge" style="background:rgba(255,214,10,.15);color:var(--yellow)">⏸ Pausado</span>':(atrasado?' <span class="badge priority">⚠ Atrasado</span>':'')))+(isDiv?' <span class="split-icon" title="Pedido dividido">👥</span>':'')+'</div><div class="prev-collab">'+p.colab+' · '+p.vols+' '+unidade+' · início: '+p.inicio+' · <span class="badge '+p.status+'">'+p.status+'</span></div><div class="progress-bar" style="width:160px;margin-top:3px"><div class="progress-fill" style="width:'+pct+'%;background:'+barColor+'"></div></div><div style="font-size:9px;color:var(--text3);margin-top:1px">'+pct+'% estimado concluído</div></div></div><div class="prev-eta"><div class="prev-time" style="color:'+barColor+(atrasado?';font-weight:800':'')+'">'+etaHtml+'</div><div class="prev-label">previsão de conclusão</div><div style="font-size:10px;color:var(--text3);margin-top:1px">Restam '+fmtSec(rem)+'</div>'+acaoHtml+'</div></div>';
   }).join('');
   const lista=document.getElementById('prev-lista'); if(lista) lista.innerHTML=html;
 }
