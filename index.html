@@ -1063,7 +1063,13 @@ function mergeColecao(remoteArr, localArr, tombMap, preferLocal){
         } else if(remoteTerminado && localTerminado){
           byId[local.id]=(remote.terminoTs||0)>(local.terminoTs||0) ? remote : local;
         } else {
-          byId[local.id]=remote;
+          // Nenhum dos dois tem termino/terminoTs (ex.: pedido em aberto que só foi
+          // pausado/retomado neste aparelho). Antes, o padrão aqui era sempre usar o
+          // remoto, o que descartava silenciosamente uma pausa/retomada feita localmente
+          // (pausarPedido/retomarPedido não mexem em termino) — fazendo o cronômetro
+          // "voltar a contar" logo após sincronizar. Agora usamos o campo atualizadoEm
+          // (atualizado nessas ações) para saber qual versão é realmente mais recente.
+          byId[local.id]=((local.atualizadoEm||0)>(remote.atualizadoEm||0)) ? local : remote;
         }
       }
     }
@@ -2490,6 +2496,7 @@ function pausarPedido(id){
   if(!p||p.pausado)return;
   p.pausado=true;
   p.pausadoDesde=Date.now();
+  p.atualizadoEm=Date.now(); // necessário p/ o merge de sincronização (mergeColecao) reconhecer a atualização
   scheduleSync();refreshAll();
   notify('Pedido '+p.cargo+' pausado. A contagem de tempo foi congelada.','info');
 }
@@ -2500,6 +2507,7 @@ function retomarPedido(id){
   p.tempoPausadoTotal=(p.tempoPausadoTotal||0)+pausaSec;
   p.pausado=false;
   p.pausadoDesde=null;
+  p.atualizadoEm=Date.now(); // idem: senão a retomada pode ser sobrescrita pela versão remota antiga no próximo sync
   scheduleSync();refreshAll();
   notify('Pedido '+p.cargo+' retomado. Contagem de tempo reiniciada.','success');
 }
